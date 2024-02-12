@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pokemon Finder by John S</title>
+    <!-- Simple styling -->
+    <style>
+        body {
+            font-family: 'Arial';
+            text-align: center;
+            margin-top: 20px;
+        }
+        #pokemonDisplay img {
+            width: 120px; /* Adjust image size */
+            height: 120px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pokemon Search Tool</h1>
+    <!-- Input for Pokemon name -->
+    <input type="text" id="pokemonName" placeholder="Enter Pokemon name...">
+    <!-- Button triggers search -->
+    <button onclick="searchPokemon()">Search</button>
+    <!-- Display results here -->
+    <div id="pokemonDisplay"></div>
+    
+    <script>
+        // Function to get Pokemon data
+        function searchPokemon() {
+            var name = document.getElementById('pokemonName').value;
+            var apiUrl = 'https://pokeapi.co/api/v2/pokemon/' + name.toLowerCase();
+
+            // Fetch data from PokeAPI
+            fetch(apiUrl)
+                .then(function(response) {
+                    if (!response.ok) {
+                        throw new Error('Pokemon not found, try another name!');
+                    }
+                    return response.json();
+                })
+                .then(function(data) {
+                    // Show Pokemon info
+                    var displayArea = document.getElementById('pokemonDisplay');
+                    displayArea.innerHTML = '<h2>' + data.name + '</h2>';
+                    displayArea.innerHTML += '<img src="' + data.sprites.front_default + '" alt="' + data.name + '">';
+                    displayArea.innerHTML += '<p>Type: ' + data.types.map(function(type) { return type.type.name; }).join(', ') + '</p>';
+                })
+                .catch(function(error) {
+                    // Handle errors
+                    document.getElementById('pokemonDisplay').innerHTML = '<p>' + error.message + '</p>';
+                });
+        }
+    </script>
+</body>
+</html>
